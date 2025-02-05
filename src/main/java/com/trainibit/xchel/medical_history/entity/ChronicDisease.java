@@ -20,7 +20,7 @@ import java.util.UUID;
 @Table(name = "chronic_diseases")
 public class ChronicDisease {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medical_records_id_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "medical_records_id_gen", sequenceName = "medical_records_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;

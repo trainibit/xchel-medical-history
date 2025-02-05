@@ -26,7 +26,7 @@ import java.util.UUID;
 @Table(name = "medical_records")
 public class MedicalHistory {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "medical_records_id_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "medical_records_id_gen", sequenceName = "medical_records_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
@@ -75,6 +75,6 @@ public class MedicalHistory {
     private Boolean active = false;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "medical-records", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<ChronicDisease> chronicDiseases = new ArrayList<>();
+    @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<DiseasesByClinicalHistory> chronicDiseases = new ArrayList<>();
 }

@@ -22,9 +22,9 @@ import java.util.UUID;
 @Data
 @Entity
 @Table(name = "diseases_by_clinical_history")
-public class DiseasesByClinicalHistory {
+public class DiseasesByClinicalHistory{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "diseases_by_clinical_history_id_gen")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "diseases_by_clinical_history_id_gen", sequenceName = "diseases_by_clinical_history_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
@@ -34,13 +34,13 @@ public class DiseasesByClinicalHistory {
     private UUID uuid;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JsonBackReference
     @JoinColumn(name = "clinical_history_id", nullable = false)
     private MedicalHistory medicalHistory;
 
     @NotNull
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "chronic_disease_id", nullable = false)
     private ChronicDisease chronicDisease;
 
