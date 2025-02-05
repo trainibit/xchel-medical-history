@@ -57,5 +57,4 @@ public class DiseasesByClinicalHistory{
     @NotNull
     @Column(name = "active", nullable = false)
     private Boolean active = false;
-
 }
