@@ -12,7 +12,7 @@ public class MedicalHistoryRequest {
     private Float size;
     private String bloodPressure;
     private String heartRate;
-    private Long lastMedicalPrescriptionUuid;
+    private UUID lastMedicalPrescriptionUuid;
     private UUID patientUuid;
     private List<ChronicDiseaseMedicalHistoryRequest> chronicDiseases;
 }

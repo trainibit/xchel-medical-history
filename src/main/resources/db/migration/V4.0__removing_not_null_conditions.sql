@@ -1,0 +1,4 @@
+ALTER TABLE public.diseases_by_clinical_history ALTER COLUMN clinical_history_id DROP NOT NULL;
+ALTER TABLE public.diseases_by_clinical_history ALTER COLUMN chronic_disease_id DROP NOT NULL;
+ALTER TABLE public.diseases_by_clinical_history DROP CONSTRAINT diseases_by_clinical_history_unique_1;
+ALTER TABLE public.diseases_by_clinical_history DROP CONSTRAINT diseases_by_clinical_history_unique_2;
