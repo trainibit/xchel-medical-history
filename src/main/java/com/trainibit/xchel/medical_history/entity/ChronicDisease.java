@@ -1,13 +1,6 @@
 package com.trainibit.xchel.medical_history.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -21,29 +14,23 @@ import java.util.UUID;
 public class ChronicDisease {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @SequenceGenerator(name = "medical_records_id_gen", sequenceName = "medical_records_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
     @Column(name = "uuid", nullable = false)
     private UUID uuid;
 
-    @NotNull
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull
     @Column(name = "created_date", nullable = false)
     @CreationTimestamp
     private LocalDate createdDate;
 
-    @NotNull
     @Column(name = "updated_date", nullable = false)
     @UpdateTimestamp
     private LocalDate updatedDate;
 
-    @NotNull
     @Column(name = "active", nullable = false)
     private Boolean active = false;
 }
