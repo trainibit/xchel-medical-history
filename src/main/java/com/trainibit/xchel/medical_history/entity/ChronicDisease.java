@@ -44,10 +44,6 @@ public class ChronicDisease {
     private LocalDate updatedDate;
 
     @NotNull
-    @Column(name = "patient_uuid", nullable = false)
-    private UUID patientUuid;
-
-    @NotNull
     @Column(name = "active", nullable = false)
     private Boolean active = false;
 }

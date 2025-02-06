@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/xchel_medical_records
     username: postgres
-    password: SoloPostgres1
+    password: trainibit
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
