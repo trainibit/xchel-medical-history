@@ -5,7 +5,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -25,11 +25,11 @@ public class ChronicDisease {
 
     @Column(name = "created_date", nullable = false)
     @CreationTimestamp
-    private LocalDate createdDate;
+    private Timestamp createdDate;
 
     @Column(name = "updated_date", nullable = false)
     @UpdateTimestamp
-    private LocalDate updatedDate;
+    private Timestamp updatedDate;
 
     @Column(name = "active", nullable = false)
     private Boolean active = false;

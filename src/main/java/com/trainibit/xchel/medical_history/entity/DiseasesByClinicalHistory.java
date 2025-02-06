@@ -1,11 +1,20 @@
 package com.trainibit.xchel.medical_history.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Data
@@ -29,13 +38,13 @@ public class DiseasesByClinicalHistory{
     @JoinColumn(name = "chronic_disease_id", nullable = false)
     private ChronicDisease chronicDisease;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "created_date", nullable = false)
-    private Instant createdDate;
+    @CreationTimestamp
+    private Timestamp createdDate;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "updated_date", nullable = false)
-    private Instant updatedDate;
+    @UpdateTimestamp
+    private Timestamp updatedDate;
 
     @Column(name = "active", nullable = false)
     private Boolean active = false;

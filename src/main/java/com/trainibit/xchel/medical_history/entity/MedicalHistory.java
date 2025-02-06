@@ -6,7 +6,7 @@ import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -43,11 +43,11 @@ public class MedicalHistory {
 
     @Column(name = "created_date", nullable = false)
     @CreationTimestamp
-    private LocalDate createdDate;
+    private Timestamp createdDate;
 
     @Column(name = "updated_date", nullable = false)
     @UpdateTimestamp
-    private LocalDate updatedDate;
+    private Timestamp updatedDate;
 
     @Column(name = "patient_uuid", nullable = false)
     private UUID patientUuid;

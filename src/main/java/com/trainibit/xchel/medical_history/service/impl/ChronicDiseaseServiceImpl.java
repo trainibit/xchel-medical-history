@@ -36,9 +36,7 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
 
     @Override
     public ChronicDiseaseResponse addChronicDisease(ChronicDiseaseRequest chronicDiseaseRequest) {
-        System.out.println("Request: " + chronicDiseaseRequest);
         ChronicDisease newChronicDisease = this.chronicDiseaseMapper.requestToEntity(chronicDiseaseRequest);
-        System.out.println("Request mapeado a entity: " + newChronicDisease);
         newChronicDisease.setActive(true);
         newChronicDisease.setUuid(UUID.randomUUID());
         return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.save(newChronicDisease));
