@@ -10,6 +10,7 @@ import com.trainibit.xchel.medical_history.response.MedicalHistoryResponse;
 import com.trainibit.xchel.medical_history.service.MedicalHistoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,15 +47,18 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         newMedicalHistory.setActive(true);
         newMedicalHistory.setUuid(UUID.randomUUID());
 
+        List<DiseasesByClinicalHistory> diseasesByClinicalHistoryList = new ArrayList<>();
+
         medicalHistoryRequest.getChronicDiseases().forEach(chronidDisease -> {
             DiseasesByClinicalHistory diseaseByClinicalHistory = new DiseasesByClinicalHistory();
             diseaseByClinicalHistory.setMedicalHistory(newMedicalHistory);
             diseaseByClinicalHistory.setUuid(UUID.randomUUID());
             diseaseByClinicalHistory.setActive(true);
             diseaseByClinicalHistory.setChronicDisease(this.chronicDiseaseRepository.findByUuid(chronidDisease.getUuid()));
-            newMedicalHistory.getChronicDiseases().add(diseaseByClinicalHistory);
+            diseasesByClinicalHistoryList.add(diseaseByClinicalHistory);
         });
 
+        newMedicalHistory.setChronicDiseases(diseasesByClinicalHistoryList);
         return this.medicalHistoryMapper.entityToResponse(this.medicalHistoryRepository.save(newMedicalHistory));
     }
 
@@ -77,20 +81,17 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         medicalHistoryToUpdate.setPatientUuid(medicalHistoryRequest.getPatientUuid() == null ? medicalHistoryToUpdate.getPatientUuid() : medicalHistoryRequest.getPatientUuid());
 
         medicalHistoryRequest.getChronicDiseases().forEach(chronicDisease -> {
-            if(chronicDisease.getActive()){
-                if(!isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(), chronicDisease.getUuid())){
-                    DiseasesByClinicalHistory diseasesByClinicalHistoryTemporary = new DiseasesByClinicalHistory();
-                    diseasesByClinicalHistoryTemporary.setMedicalHistory(medicalHistoryToUpdate);
-                    diseasesByClinicalHistoryTemporary.setUuid(UUID.randomUUID());
-                    diseasesByClinicalHistoryTemporary.setChronicDisease(this.chronicDiseaseRepository.findByUuid(chronicDisease.getUuid()));
-                    diseasesByClinicalHistoryTemporary.setActive(true);
-                    medicalHistoryToUpdate.getChronicDiseases().add(diseasesByClinicalHistoryTemporary);
-                }
+            // Si ya existe la enfermedad en el historial médico
+            if(isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(), chronicDisease.getUuid())){
+                medicalHistoryToUpdate.getChronicDiseases().stream().filter(disease -> disease.getChronicDisease().getUuid().equals(chronicDisease.getUuid())).forEach(coincidence -> coincidence.setActive(chronicDisease.getActive()));
             }
-            else if(isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(), chronicDisease.getUuid())){
-                medicalHistoryToUpdate.getChronicDiseases().stream()
-                        .filter(chronicDiseaseExistent -> chronicDiseaseExistent.getUuid().equals(chronicDisease.getUuid()))
-                        .forEach(coincidence -> coincidence.setActive(false));
+            else{
+                DiseasesByClinicalHistory diseasesByClinicalHistoryTemporary = new DiseasesByClinicalHistory();
+                diseasesByClinicalHistoryTemporary.setMedicalHistory(medicalHistoryToUpdate);
+                diseasesByClinicalHistoryTemporary.setUuid(UUID.randomUUID());
+                diseasesByClinicalHistoryTemporary.setChronicDisease(this.chronicDiseaseRepository.findByUuid(chronicDisease.getUuid()));
+                diseasesByClinicalHistoryTemporary.setActive(true);
+                medicalHistoryToUpdate.getChronicDiseases().add(diseasesByClinicalHistoryTemporary);
             }
         });
 
@@ -98,6 +99,6 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
     }
 
     private Boolean isDiseaseInHistory(List<DiseasesByClinicalHistory> diseasesByClinicalHistory, UUID uuidDisease){
-        return diseasesByClinicalHistory.stream().anyMatch(disease -> disease.getUuid().equals(uuidDisease));
+        return diseasesByClinicalHistory.stream().anyMatch(disease -> disease.getChronicDisease().getUuid().equals(uuidDisease));
     }
 }

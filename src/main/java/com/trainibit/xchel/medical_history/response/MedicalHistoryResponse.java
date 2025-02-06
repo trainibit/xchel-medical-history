@@ -13,7 +13,7 @@ public class MedicalHistoryResponse {
     private Float size;
     private String bloodPressure;
     private String heartRate;
-    private Long lastMedicalPrescriptionUuid;
+    private UUID lastMedicalPrescriptionUuid;
     private UUID patientUuid;
     private Boolean active = false;
     private List<DiseasesByClinicalHistoryResponse> chronicDiseases;

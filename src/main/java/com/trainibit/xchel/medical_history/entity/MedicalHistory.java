@@ -39,7 +39,7 @@ public class MedicalHistory {
     private String heartRate;
 
     @Column(name = "last_medical_prescription_uuid", nullable = false)
-    private Long lastMedicalPrescriptionUuid;
+    private UUID lastMedicalPrescriptionUuid;
 
     @Column(name = "created_date", nullable = false)
     @CreationTimestamp
