@@ -6,11 +6,16 @@ import com.trainibit.xchel.medical_history.repository.ChronicDiseaseRepository;
 import com.trainibit.xchel.medical_history.request.ChronicDiseaseRequest;
 import com.trainibit.xchel.medical_history.response.ChronicDiseaseResponse;
 import com.trainibit.xchel.medical_history.service.ChronicDiseaseService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     final
@@ -25,12 +30,16 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     }
 
     @Override
+    @Cacheable(value = "chronicDiseases", key = "'all'")
     public List<ChronicDiseaseResponse> getAllChronicDiseases() {
+        log.info("Obteniendo las enfermedades crónicas desde la Base de Datos");
         return this.chronicDiseaseMapper.entityToResponseList(this.chronicDiseaseRepository.findAll());
     }
 
     @Override
+    @Cacheable(value = "chronicDisease", key="#uuid")
     public ChronicDiseaseResponse getChronicDiseaseByUuid(UUID uuid) {
+        log.info("Obteniendo la enfermedad crónica desde la Base de Datos");
         return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.findByUuid(uuid));
     }
 
@@ -43,6 +52,7 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "chronicDisease", key = "#uuid", beforeInvocation = true)
     public ChronicDiseaseResponse deleteChronicDisease(UUID uuid) {
         ChronicDisease chronicDiseaseToDelete = this.chronicDiseaseRepository.findByUuid(uuid);
         chronicDiseaseToDelete.setActive(false);
@@ -50,6 +60,7 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     }
 
     @Override
+    @CachePut(cacheNames = "chronicDisease", key="#uuid")
     public ChronicDiseaseResponse updateChronicDisease(UUID uuid, ChronicDiseaseRequest chronicDiseaseRequest) {
         ChronicDisease chronicDiseaseToUpdate = this.chronicDiseaseRepository.findByUuid(uuid);
         chronicDiseaseToUpdate.setName(chronicDiseaseRequest.getName() == null ? chronicDiseaseToUpdate.getName() : chronicDiseaseRequest.getName());
