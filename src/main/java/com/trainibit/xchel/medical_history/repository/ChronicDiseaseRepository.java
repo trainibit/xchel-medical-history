@@ -10,8 +10,8 @@ import java.util.UUID;
 
 @Repository
 public interface ChronicDiseaseRepository extends JpaRepository<ChronicDisease, Long> {
-    @NonNull
-    List<ChronicDisease> findAll();
+//    @NonNull
+//    List<ChronicDisease> findAll();
 
     ChronicDisease findByUuid(UUID uuid);
 }

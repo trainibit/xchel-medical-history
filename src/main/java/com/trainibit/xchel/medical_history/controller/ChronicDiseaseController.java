@@ -4,6 +4,7 @@ import com.trainibit.xchel.medical_history.request.ChronicDiseaseRequest;
 import com.trainibit.xchel.medical_history.response.ChronicDiseaseResponse;
 import com.trainibit.xchel.medical_history.service.ChronicDiseaseService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class ChronicDiseaseController {
     final
     ChronicDiseaseService chronicDiseaseService;
 
+    @Autowired
     public ChronicDiseaseController(ChronicDiseaseService chronicDiseaseService) {
         this.chronicDiseaseService = chronicDiseaseService;
     }
