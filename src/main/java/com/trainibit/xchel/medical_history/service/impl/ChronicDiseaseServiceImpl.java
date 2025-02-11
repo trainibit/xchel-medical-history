@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     }
 
     @Override
+    @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
     public ChronicDiseaseResponse addChronicDisease(ChronicDiseaseRequest chronicDiseaseRequest) {
         ChronicDisease newChronicDisease = this.chronicDiseaseMapper.requestToEntity(chronicDiseaseRequest);
         newChronicDisease.setActive(true);
@@ -52,7 +54,10 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     }
 
     @Override
-    @CacheEvict(cacheNames = "chronicDisease", key = "#uuid", beforeInvocation = true)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "chronicDisease", key = "#uuid", beforeInvocation = true),
+            @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
+    })
     public ChronicDiseaseResponse deleteChronicDisease(UUID uuid) {
         ChronicDisease chronicDiseaseToDelete = this.chronicDiseaseRepository.findByUuid(uuid);
         chronicDiseaseToDelete.setActive(false);
@@ -61,6 +66,7 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
 
     @Override
     @CachePut(cacheNames = "chronicDisease", key="#uuid")
+    @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
     public ChronicDiseaseResponse updateChronicDisease(UUID uuid, ChronicDiseaseRequest chronicDiseaseRequest) {
         ChronicDisease chronicDiseaseToUpdate = this.chronicDiseaseRepository.findByUuid(uuid);
         chronicDiseaseToUpdate.setName(chronicDiseaseRequest.getName() == null ? chronicDiseaseToUpdate.getName() : chronicDiseaseRequest.getName());
