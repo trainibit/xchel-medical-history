@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.trainibit.xchel.medical_history.entity.MedicalHistory;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
-public class DiseasesByClinicalHistoryResponse {
+public class DiseasesByClinicalHistoryResponse implements Serializable {
     @JsonBackReference
     private MedicalHistory medicalHistory;
 

@@ -2,11 +2,12 @@ package com.trainibit.xchel.medical_history.response;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
 @Data
-public class MedicalHistoryResponse {
+public class MedicalHistoryResponse implements Serializable {
     private UUID uuid;
     private String allergies;
     private Float weight;
