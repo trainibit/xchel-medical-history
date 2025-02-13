@@ -34,14 +34,15 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     @Cacheable(value = "chronicDiseases", key = "'all'")
     public List<ChronicDiseaseResponse> getAllChronicDiseases() {
         log.info("Obteniendo las enfermedades crónicas desde la Base de Datos");
-        return this.chronicDiseaseMapper.entityToResponseList(this.chronicDiseaseRepository.findAll());
+        return this.chronicDiseaseMapper.entityToResponseList(
+                this.chronicDiseaseRepository.findAllByActiveTrue());
     }
 
     @Override
     @Cacheable(value = "chronicDisease", key="#uuid")
     public ChronicDiseaseResponse getChronicDiseaseByUuid(UUID uuid) {
         log.info("Obteniendo la enfermedad crónica desde la Base de Datos");
-        return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.findByUuid(uuid));
+        return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.findByUuidAndActiveTrue(uuid));
     }
 
     @Override
@@ -59,7 +60,7 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
             @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
     })
     public ChronicDiseaseResponse deleteChronicDisease(UUID uuid) {
-        ChronicDisease chronicDiseaseToDelete = this.chronicDiseaseRepository.findByUuid(uuid);
+        ChronicDisease chronicDiseaseToDelete = this.chronicDiseaseRepository.findByUuidAndActiveTrue(uuid);
         chronicDiseaseToDelete.setActive(false);
         return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.save(chronicDiseaseToDelete));
     }
@@ -68,7 +69,7 @@ public class ChronicDiseaseServiceImpl implements ChronicDiseaseService {
     @CachePut(cacheNames = "chronicDisease", key="#uuid")
     @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
     public ChronicDiseaseResponse updateChronicDisease(UUID uuid, ChronicDiseaseRequest chronicDiseaseRequest) {
-        ChronicDisease chronicDiseaseToUpdate = this.chronicDiseaseRepository.findByUuid(uuid);
+        ChronicDisease chronicDiseaseToUpdate = this.chronicDiseaseRepository.findByUuidAndActiveTrue(uuid);
         chronicDiseaseToUpdate.setName(chronicDiseaseRequest.getName() == null ? chronicDiseaseToUpdate.getName() : chronicDiseaseRequest.getName());
         return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.save(chronicDiseaseToUpdate));
     }

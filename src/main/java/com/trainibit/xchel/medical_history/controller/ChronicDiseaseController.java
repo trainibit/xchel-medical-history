@@ -41,7 +41,7 @@ public class ChronicDiseaseController {
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<ChronicDiseaseResponse> deleteChronicDisease(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(this.chronicDiseaseService.deleteChronicDisease(uuid));
+        return ResponseEntity.status(204).body(this.chronicDiseaseService.deleteChronicDisease(uuid));
     }
 
     @PutMapping("/{uuid}")
