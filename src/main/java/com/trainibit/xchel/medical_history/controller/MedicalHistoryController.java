@@ -43,7 +43,7 @@ public class MedicalHistoryController {
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<MedicalHistoryResponse> updateMedicalHistory(@PathVariable UUID uuid, @RequestBody MedicalHistoryRequest medicalHistoryRequest) {
+    public ResponseEntity<MedicalHistoryResponse> updateMedicalHistory(@PathVariable UUID uuid, @Valid @RequestBody MedicalHistoryRequest medicalHistoryRequest) {
         return ResponseEntity.ok(this.medicalHistoryService.updateMedicalHistory(uuid, medicalHistoryRequest));
     }
 }

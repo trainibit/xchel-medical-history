@@ -55,7 +55,7 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
             diseaseByClinicalHistory.setMedicalHistory(newMedicalHistory);
             diseaseByClinicalHistory.setUuid(UUID.randomUUID());
             diseaseByClinicalHistory.setActive(true);
-            diseaseByClinicalHistory.setChronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(chronicDisease.getUuid()));
+            diseaseByClinicalHistory.setChronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(UUID.fromString(chronicDisease.getUuid())));
             diseasesByClinicalHistoryList.add(diseaseByClinicalHistory);
         });
 
@@ -76,21 +76,21 @@ public class MedicalHistoryServiceImpl implements MedicalHistoryService {
         medicalHistoryToUpdate.setAllergies(medicalHistoryRequest.getAllergies() == null ? medicalHistoryToUpdate.getAllergies() : medicalHistoryRequest.getAllergies());
         medicalHistoryToUpdate.setSize(medicalHistoryRequest.getSize() == null ? medicalHistoryToUpdate.getSize() : medicalHistoryRequest.getSize());
         medicalHistoryToUpdate.setWeight(medicalHistoryRequest.getWeight() == null ? medicalHistoryToUpdate.getWeight() : medicalHistoryRequest.getWeight());
-        medicalHistoryToUpdate.setLastMedicalPrescriptionUuid(medicalHistoryRequest.getLastMedicalPrescriptionUuid() == null ? medicalHistoryToUpdate.getLastMedicalPrescriptionUuid() : medicalHistoryRequest.getLastMedicalPrescriptionUuid());
+        medicalHistoryToUpdate.setLastMedicalPrescriptionUuid(medicalHistoryRequest.getLastMedicalPrescriptionUuid() == null ? medicalHistoryToUpdate.getLastMedicalPrescriptionUuid() : UUID.fromString(medicalHistoryRequest.getLastMedicalPrescriptionUuid()));
         medicalHistoryToUpdate.setBloodPressure(medicalHistoryRequest.getBloodPressure() == null ? medicalHistoryToUpdate.getBloodPressure() : medicalHistoryRequest.getBloodPressure());
-        medicalHistoryToUpdate.setHeartRate(medicalHistoryRequest.getHeartRate() == null ? medicalHistoryToUpdate.getHeartRate() : medicalHistoryRequest.getHeartRate());
-        medicalHistoryToUpdate.setPatientUuid(medicalHistoryRequest.getPatientUuid() == null ? medicalHistoryToUpdate.getPatientUuid() : medicalHistoryRequest.getPatientUuid());
+        medicalHistoryToUpdate.setHeartRateBpm(medicalHistoryRequest.getHeartRateBpm() == null ? medicalHistoryToUpdate.getHeartRateBpm() : medicalHistoryRequest.getHeartRateBpm());
+        medicalHistoryToUpdate.setPatientUuid(medicalHistoryRequest.getPatientUuid() == null ? medicalHistoryToUpdate.getPatientUuid() : UUID.fromString(medicalHistoryRequest.getPatientUuid()));
 
         medicalHistoryRequest.getChronicDiseases().forEach(chronicDisease -> {
             // Si ya existe la enfermedad en el historial médico
-            if(isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(), chronicDisease.getUuid())){
-                medicalHistoryToUpdate.getChronicDiseases().stream().filter(disease -> disease.getChronicDisease().getUuid().equals(chronicDisease.getUuid())).forEach(coincidence -> coincidence.setActive(chronicDisease.getActive()));
+            if(isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(), UUID.fromString(chronicDisease.getUuid()))){
+                medicalHistoryToUpdate.getChronicDiseases().stream().filter(disease -> disease.getChronicDisease().getUuid().equals(UUID.fromString(chronicDisease.getUuid()))).forEach(coincidence -> coincidence.setActive(chronicDisease.getActive()));
             }
-            else{
+            else if(chronicDisease.getActive()){
                 DiseasesByClinicalHistory diseasesByClinicalHistoryTemporary = new DiseasesByClinicalHistory();
                 diseasesByClinicalHistoryTemporary.setMedicalHistory(medicalHistoryToUpdate);
                 diseasesByClinicalHistoryTemporary.setUuid(UUID.randomUUID());
-                diseasesByClinicalHistoryTemporary.setChronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(chronicDisease.getUuid()));
+                diseasesByClinicalHistoryTemporary.setChronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(UUID.fromString(chronicDisease.getUuid())));
                 diseasesByClinicalHistoryTemporary.setActive(true);
                 medicalHistoryToUpdate.getChronicDiseases().add(diseasesByClinicalHistoryTemporary);
             }

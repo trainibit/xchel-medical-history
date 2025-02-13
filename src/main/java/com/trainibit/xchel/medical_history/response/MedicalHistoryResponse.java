@@ -13,7 +13,7 @@ public class MedicalHistoryResponse implements Serializable {
     private Float weight;
     private Float size;
     private String bloodPressure;
-    private String heartRate;
+    private Integer heartRateBpm;
     private UUID lastMedicalPrescriptionUuid;
     private UUID patientUuid;
     private Boolean active = false;
