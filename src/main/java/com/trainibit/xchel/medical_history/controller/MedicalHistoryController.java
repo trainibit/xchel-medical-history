@@ -39,7 +39,7 @@ public class MedicalHistoryController {
 
     @DeleteMapping("/{uuid}")
     public ResponseEntity<MedicalHistoryResponse> deleteMedicalHistory(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(this.medicalHistoryService.deleteMedicalHistory(uuid));
+        return ResponseEntity.status(204).body(this.medicalHistoryService.deleteMedicalHistory(uuid));
     }
 
     @PutMapping("/{uuid}")

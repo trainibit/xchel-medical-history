@@ -9,5 +9,5 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface DiseasesByClinicalHistoryMapper {
     DiseasesByClinicalHistoryResponse entityToResponse(DiseasesByClinicalHistory diseasesByClinicalHistory);
-    List<DiseasesByClinicalHistoryResponse> entityToResponseList(List<DiseasesByClinicalHistory> diseasesByClinicalRecords);
+    List<DiseasesByClinicalHistoryResponse> entityToResponseList(List<DiseasesByClinicalHistory> diseasesByClinicalHistory);
 }

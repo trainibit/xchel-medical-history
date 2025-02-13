@@ -1,0 +1,1 @@
+ALTER TABLE public.chronic_diseases DROP CONSTRAINT chronic_diseases_unique_1;
