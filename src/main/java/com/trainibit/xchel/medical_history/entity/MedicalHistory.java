@@ -23,7 +23,7 @@ public class MedicalHistory {
     @Column(name = "uuid", nullable = false)
     private UUID uuid;
 
-    @Column(name = "allergies", nullable = false, length = Integer.MAX_VALUE)
+    @Column(name = "allergies", nullable = false)
     private String allergies;
 
     @Column(name = "weight")
@@ -32,11 +32,11 @@ public class MedicalHistory {
     @Column(name = "size", nullable = false)
     private Float size;
 
-    @Column(name = "blood_pressure", length = Integer.MAX_VALUE)
+    @Column(name = "blood_pressure")
     private String bloodPressure;
 
-    @Column(name = "heart_rate", length = Integer.MAX_VALUE)
-    private String heartRate;
+    @Column(name = "heart_rate_bpm")
+    private Integer heartRateBpm;
 
     @Column(name = "last_medical_prescription_uuid", nullable = false)
     private UUID lastMedicalPrescriptionUuid;

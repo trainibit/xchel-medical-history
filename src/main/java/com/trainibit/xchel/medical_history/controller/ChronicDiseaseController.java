@@ -45,7 +45,7 @@ public class ChronicDiseaseController {
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<ChronicDiseaseResponse> updateMedicalHistory(@PathVariable UUID uuid, @RequestBody ChronicDiseaseRequest chronicDiseaseRequest) {
+    public ResponseEntity<ChronicDiseaseResponse> updateMedicalHistory(@PathVariable UUID uuid, @Valid @RequestBody ChronicDiseaseRequest chronicDiseaseRequest) {
         return ResponseEntity.ok(this.chronicDiseaseService.updateChronicDisease(uuid, chronicDiseaseRequest));
     }
 }
