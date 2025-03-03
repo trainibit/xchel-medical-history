@@ -1,6 +1,5 @@
 package com.trainibit.xchel.medical_history.service;
 
-import com.trainibit.xchel.medical_history.entity.ChronicDisease;
 import com.trainibit.xchel.medical_history.request.ChronicDiseaseRequest;
 import com.trainibit.xchel.medical_history.response.ChronicDiseaseResponse;
 

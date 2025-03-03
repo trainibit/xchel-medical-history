@@ -1,0 +1,31 @@
+services:
+  xchel_medical_history_app:
+    container_name: xchel_medical_history
+    image: xchel_medical_history:1.0.0
+    build: .
+    ports: 
+      - 8080:8080
+    environment:
+      - DATABASE_POSTGRES_URL=jdbc:postgresql://postgres_xchel_medical_history:5432/xchel_medical_records
+      - DATABASE_POSTGRES_USERNAME=postgres
+      - DATABASE_POSTGRES_PASSWORD=y!_X!K8E!G!hEc6!Dvh@
+      - REDIS_HOST=redis_xchel_medical_history
+      - REDIS_PORT=6379
+    depends_on:
+      - postgres_xchel_medical_history
+      - redis_xchel_medical_history
+    command: ["sh", "-c", "sleep 30 && ./java -jar xchel-medical-history-app.jar"]
+  postgres_xchel_medical_history:
+    container_name: postgres_xchel_medical_history
+    image: postgres:17.4
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=y!_X!K8E!G!hEc6!Dvh@
+      - POSTGRES_DB=xchel_medical_records
+  redis_xchel_medical_history:
+    container_name: redis_xchel_medical_history
+    image: redis:7.4.2
+    ports:
+      - 6379:6379
