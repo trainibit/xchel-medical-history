@@ -1,19 +1,19 @@
-package com.trainibit.xchel.medical_history.service;
-
-import com.trainibit.xchel.medical_history.request.MedicalHistoryRequest;
-import com.trainibit.xchel.medical_history.response.MedicalHistoryResponse;
+package com.trainibit.xchel.medical_history.service.jpa;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface MedicalHistoryService {
+import com.trainibit.xchel.medical_history.request.MedicalHistoryRequest;
+import com.trainibit.xchel.medical_history.response.MedicalHistoryResponse;
+
+public interface MedicalHistoryServiceJpa {
     List<MedicalHistoryResponse> getAllMedicalRecords();
 
     MedicalHistoryResponse getMedicalHistoryByUuid(UUID uuid);
 
     MedicalHistoryResponse createMedicalHistory(MedicalHistoryRequest medicalHistoryRequest);
 
-    MedicalHistoryResponse deleteMedicalHistory(UUID uuid);
+    void deleteMedicalHistory(UUID uuid);
 
     MedicalHistoryResponse updateMedicalHistory(UUID uuid, MedicalHistoryRequest medicalHistoryRequest);
 }
