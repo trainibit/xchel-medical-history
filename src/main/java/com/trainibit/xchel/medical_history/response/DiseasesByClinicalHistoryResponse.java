@@ -1,13 +1,16 @@
 package com.trainibit.xchel.medical_history.response;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.trainibit.xchel.medical_history.entity.MedicalHistory;
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.UUID;
 
-@Data
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.trainibit.xchel.medical_history.entity.MedicalHistory;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class DiseasesByClinicalHistoryResponse implements Serializable {
     @JsonBackReference
     private MedicalHistory medicalHistory;

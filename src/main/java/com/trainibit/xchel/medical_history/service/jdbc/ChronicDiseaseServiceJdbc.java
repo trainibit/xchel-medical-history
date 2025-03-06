@@ -1,19 +1,19 @@
-package com.trainibit.xchel.medical_history.service;
-
-import com.trainibit.xchel.medical_history.request.ChronicDiseaseRequest;
-import com.trainibit.xchel.medical_history.response.ChronicDiseaseResponse;
+package com.trainibit.xchel.medical_history.service.jdbc;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface ChronicDiseaseService {
+import com.trainibit.xchel.medical_history.request.ChronicDiseaseRequest;
+import com.trainibit.xchel.medical_history.response.ChronicDiseaseResponse;
+
+public interface ChronicDiseaseServiceJdbc {
     List<ChronicDiseaseResponse> getAllChronicDiseases();
 
     ChronicDiseaseResponse getChronicDiseaseByUuid(UUID uuid);
 
     ChronicDiseaseResponse addChronicDisease(ChronicDiseaseRequest chronicDiseaseRequest);
 
-    ChronicDiseaseResponse deleteChronicDisease(UUID uuid);
+    void deleteChronicDisease(UUID uuid);
 
     ChronicDiseaseResponse updateChronicDisease(UUID uuid, ChronicDiseaseRequest chronicDiseaseRequest);
 }

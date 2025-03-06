@@ -1,16 +1,32 @@
 package com.trainibit.xchel.medical_history.entity;
 
-import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@Data
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
 @Table(name = "chronic_diseases")
+
+@Builder
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor
+@Getter
+@Setter
 public class ChronicDisease {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,5 +48,6 @@ public class ChronicDisease {
     private Timestamp updatedDate;
 
     @Column(name = "active", nullable = false)
-    private Boolean active = false;
+    @Builder.Default
+    private Boolean active = true;
 }
