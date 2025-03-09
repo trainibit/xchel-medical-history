@@ -1,13 +1,11 @@
 package com.trainibit.xchel.medical_history.dao.impl;
 
-import java.sql.Types;
 import java.util.List;
 import java.util.UUID;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -16,17 +14,17 @@ import com.trainibit.xchel.medical_history.dao.ChronicDiseaseDao;
 import com.trainibit.xchel.medical_history.dao.mapper.ChronicDiseaseDaoMapper;
 import com.trainibit.xchel.medical_history.entity.ChronicDisease;
 
+import oracle.jdbc.OracleTypes;
+
 @Repository
 public class ChronicDiseaseDaoImpl implements ChronicDiseaseDao {
-    private JdbcTemplate jdbcTemplate;
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private String sql;
     private MapSqlParameterSource params;
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private ChronicDiseaseDaoMapper chronicDiseaseDaoMapper = new ChronicDiseaseDaoMapper();
 
     @Autowired
     public void setDataSource(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
         namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
@@ -36,7 +34,7 @@ public class ChronicDiseaseDaoImpl implements ChronicDiseaseDao {
                 .append("SELECT * FROM CHRONIC_DISEASES WHERE ACTIVE = 'Y'")
                 .toString();
 
-        return jdbcTemplate.query(sql, chronicDiseaseDaoMapper);
+        return namedParameterJdbcTemplate.query(sql, chronicDiseaseDaoMapper);
     }
 
     @Override
@@ -47,7 +45,7 @@ public class ChronicDiseaseDaoImpl implements ChronicDiseaseDao {
                 .toString();
 
         params = new MapSqlParameterSource();
-        params.addValue("uuid", uuid, Types.VARCHAR);
+        params.addValue("uuid", uuid, OracleTypes.VARCHAR);
 
         return namedParameterJdbcTemplate.queryForObject(sql, params, chronicDiseaseDaoMapper);
     }
@@ -62,8 +60,8 @@ public class ChronicDiseaseDaoImpl implements ChronicDiseaseDao {
         String uuid = UUID.randomUUID().toString();
 
         params = new MapSqlParameterSource();
-        params.addValue("uuid", uuid, Types.VARCHAR);
-        params.addValue("name", name, Types.VARCHAR);
+        params.addValue("uuid", uuid, OracleTypes.VARCHAR);
+        params.addValue("name", name, OracleTypes.VARCHAR);
 
         namedParameterJdbcTemplate.update(sql, params);
 
@@ -78,8 +76,8 @@ public class ChronicDiseaseDaoImpl implements ChronicDiseaseDao {
                 .toString();
 
         params = new MapSqlParameterSource();
-        params.addValue("name", name, Types.VARCHAR);
-        params.addValue("uuid", uuid, Types.VARCHAR);
+        params.addValue("name", name, OracleTypes.VARCHAR);
+        params.addValue("uuid", uuid, OracleTypes.VARCHAR);
 
         namedParameterJdbcTemplate.update(sql, params);
 
@@ -93,7 +91,7 @@ public class ChronicDiseaseDaoImpl implements ChronicDiseaseDao {
                 .toString();
 
         params = new MapSqlParameterSource();
-        params.addValue("uuid", uuid, Types.VARCHAR);
+        params.addValue("uuid", uuid, OracleTypes.VARCHAR);
 
         namedParameterJdbcTemplate.update(sql, params);
     }
