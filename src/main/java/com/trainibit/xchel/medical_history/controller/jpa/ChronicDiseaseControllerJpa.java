@@ -3,7 +3,6 @@ package com.trainibit.xchel.medical_history.controller.jpa;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +35,7 @@ public class ChronicDiseaseControllerJpa {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<ChronicDiseaseResponse> getChronicDisease(@PathVariable UUID uuid) {
+    public ResponseEntity<ChronicDiseaseResponse> getChronicDisease(@PathVariable String uuid) {
         return ResponseEntity.ok(this.chronicDiseaseServiceJpa.getChronicDiseaseByUuid(uuid));
     }
 
@@ -47,13 +46,13 @@ public class ChronicDiseaseControllerJpa {
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<Void> deleteChronicDisease(@PathVariable UUID uuid) {
+    public ResponseEntity<Void> deleteChronicDisease(@PathVariable String uuid) {
         this.chronicDiseaseServiceJpa.deleteChronicDisease(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<ChronicDiseaseResponse> updateMedicalHistory(@PathVariable UUID uuid,
+    public ResponseEntity<ChronicDiseaseResponse> updateMedicalHistory(@PathVariable String uuid,
             @Valid @RequestBody ChronicDiseaseRequest chronicDiseaseRequest) {
         return ResponseEntity.ok(this.chronicDiseaseServiceJpa.updateChronicDisease(uuid, chronicDiseaseRequest));
     }

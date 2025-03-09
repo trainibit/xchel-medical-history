@@ -3,7 +3,6 @@ package com.trainibit.xchel.medical_history.controller.jpa;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,37 +23,37 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/medical-records-jpa")
 public class MedicalHistoryControllerJpa {
-    final MedicalHistoryServiceJpa medicalHistoryService;
+    final MedicalHistoryServiceJpa medicalHistoryServiceJpa;
 
-    public MedicalHistoryControllerJpa(MedicalHistoryServiceJpa medicalHistoryService) {
-        this.medicalHistoryService = medicalHistoryService;
+    public MedicalHistoryControllerJpa(MedicalHistoryServiceJpa medicalHistoryServiceJpa) {
+        this.medicalHistoryServiceJpa = medicalHistoryServiceJpa;
     }
 
     @GetMapping
     public ResponseEntity<List<MedicalHistoryResponse>> getMedicalRecords() {
-        return ResponseEntity.ok(this.medicalHistoryService.getAllMedicalRecords());
+        return ResponseEntity.ok(this.medicalHistoryServiceJpa.getAllMedicalRecords());
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<MedicalHistoryResponse> getMedicalHistory(@PathVariable UUID uuid) {
-        return ResponseEntity.ok(this.medicalHistoryService.getMedicalHistoryByUuid(uuid));
+    public ResponseEntity<MedicalHistoryResponse> getMedicalHistory(@PathVariable String uuid) {
+        return ResponseEntity.ok(this.medicalHistoryServiceJpa.getMedicalHistoryByUuid(uuid));
     }
 
     @PostMapping
     public ResponseEntity<MedicalHistoryResponse> createMedicalHistory(
             @Valid @RequestBody MedicalHistoryRequest medicalHistoryRequest) {
-        return new ResponseEntity<>(this.medicalHistoryService.createMedicalHistory(medicalHistoryRequest), CREATED);
+        return new ResponseEntity<>(this.medicalHistoryServiceJpa.createMedicalHistory(medicalHistoryRequest), CREATED);
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<MedicalHistoryResponse> deleteMedicalHistory(@PathVariable UUID uuid) {
-        this.medicalHistoryService.deleteMedicalHistory(uuid);
+    public ResponseEntity<MedicalHistoryResponse> deleteMedicalHistory(@PathVariable String uuid) {
+        this.medicalHistoryServiceJpa.deleteMedicalHistory(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<MedicalHistoryResponse> updateMedicalHistory(@PathVariable UUID uuid,
+    public ResponseEntity<MedicalHistoryResponse> updateMedicalHistory(@PathVariable String uuid,
             @Valid @RequestBody MedicalHistoryRequest medicalHistoryRequest) {
-        return ResponseEntity.ok(this.medicalHistoryService.updateMedicalHistory(uuid, medicalHistoryRequest));
+        return ResponseEntity.ok(this.medicalHistoryServiceJpa.updateMedicalHistory(uuid, medicalHistoryRequest));
     }
 }

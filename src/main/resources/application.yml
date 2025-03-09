@@ -2,17 +2,24 @@ spring:
   application:
     name: medical-history
   datasource:
-    url: ${DATABASE_POSTGRES_URL}
-    username: ${DATABASE_POSTGRES_USERNAME}
-    password: ${DATABASE_POSTGRES_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:oracle:thin:@${ORACLE_DATABASE_HOST}:${ORACLE_DATABASE_PORT}/${ORACLE_DATABASE_SERVICE_NAME}
+    username: ${ORACLE_DATABASE_USERNAME}
+    password: ${ORACLE_DATABASE_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0.1
+    locations: classpath:db/migration_oracle
   jpa:
     hibernate:
       ddl-auto: validate
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        "[format_sql]": true
+        dialect: org.hibernate.dialect.OracleDialect
+        "[default_schema]": ${ORACLE_DATABASE_USERNAME}
   cache:
     type: redis
   data:

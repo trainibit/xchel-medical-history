@@ -1,7 +1,6 @@
 package com.trainibit.xchel.medical_history.entity;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "chronic_diseases")
+@Table(name = "CHRONIC_DISEASES")
 
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -30,24 +29,24 @@ import lombok.Setter;
 public class ChronicDisease {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
-    private UUID uuid;
+    @Column(name = "UUID", nullable = false)
+    private String uuid;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "CREATED_DATE", nullable = false)
     @CreationTimestamp
     private Timestamp createdDate;
 
-    @Column(name = "updated_date", nullable = false)
+    @Column(name = "UPDATED_DATE", nullable = false)
     @UpdateTimestamp
     private Timestamp updatedDate;
 
-    @Column(name = "active", nullable = false)
+    @Column(name = "ACTIVE", nullable = false)
     @Builder.Default
-    private Boolean active = true;
+    private Character active = 'Y';
 }

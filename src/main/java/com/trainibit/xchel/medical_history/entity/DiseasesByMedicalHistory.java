@@ -1,7 +1,6 @@
 package com.trainibit.xchel.medical_history.entity;
 
 import java.sql.Timestamp;
-import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -26,7 +25,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "diseases_by_clinical_history")
+@Table(name = "DISEASES_BY_CLINICAL_HISTORY")
 
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -37,29 +36,29 @@ import lombok.ToString;
 public class DiseasesByMedicalHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
-    private UUID uuid;
+    @Column(name = "UUID", nullable = false)
+    private String uuid;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JsonBackReference
-    @JoinColumn(name = "clinical_history_id", nullable = false)
+    @JoinColumn(name = "CLINICAL_HISTORY_ID", nullable = false)
     private MedicalHistory medicalHistory;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "chronic_disease_id", nullable = false)
+    @JoinColumn(name = "CHRONIC_DISEASE_ID", nullable = false)
     private ChronicDisease chronicDisease;
 
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "CREATED_DATE", nullable = false)
     @CreationTimestamp
     private Timestamp createdDate;
 
-    @Column(name = "updated_date", nullable = false)
+    @Column(name = "UPDATED_DATE", nullable = false)
     @UpdateTimestamp
     private Timestamp updatedDate;
 
-    @Column(name = "active", nullable = false)
-    private Boolean active;
+    @Column(name = "ACTIVE", nullable = false)
+    private Character active;
 }

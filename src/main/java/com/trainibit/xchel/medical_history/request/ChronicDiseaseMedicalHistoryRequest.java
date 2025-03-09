@@ -12,5 +12,5 @@ public class ChronicDiseaseMedicalHistoryRequest {
     @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", message = "Algún UUID ingresado de la lista de enfermedades crónicas no tiene el formato de un UUID valido")
     private String uuid;
 
-    private Boolean active;
+    private Character active;
 }

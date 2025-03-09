@@ -3,7 +3,6 @@ package com.trainibit.xchel.medical_history.entity;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,7 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "medical_records")
+@Table(name = "MEDICAL_RECORDS")
 
 @Builder
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -37,44 +36,44 @@ import lombok.Setter;
 public class MedicalHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "ID", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
-    private UUID uuid;
+    @Column(name = "UUID", nullable = false)
+    private String uuid;
 
-    @Column(name = "allergies", nullable = false)
+    @Column(name = "ALLERGIES", nullable = false)
     private String allergies;
 
-    @Column(name = "weight")
+    @Column(name = "WEIGHT")
     private Float weight;
 
-    @Column(name = "size", nullable = false)
-    private Float size;
+    @Column(name = "HEIGHT", nullable = false)
+    private Float height;
 
-    @Column(name = "blood_pressure")
+    @Column(name = "BLOOD_PRESSURE")
     private String bloodPressure;
 
-    @Column(name = "heart_rate_bpm")
+    @Column(name = "HEART_RATE_BPM")
     private Integer heartRateBpm;
 
-    @Column(name = "last_medical_prescription_uuid", nullable = false)
-    private UUID lastMedicalPrescriptionUuid;
+    @Column(name = "LAST_MEDICAL_PRESCRIPTION_UUID", nullable = false)
+    private String lastMedicalPrescriptionUuid;
 
-    @Column(name = "created_date", nullable = false)
+    @Column(name = "CREATED_DATE", nullable = false)
     @CreationTimestamp
     private Timestamp createdDate;
 
-    @Column(name = "updated_date", nullable = false)
+    @Column(name = "UPDATED_DATE", nullable = false)
     @UpdateTimestamp
     private Timestamp updatedDate;
 
-    @Column(name = "patient_uuid", nullable = false)
-    private UUID patientUuid;
+    @Column(name = "PATIENT_UUID", nullable = false)
+    private String patientUuid;
 
-    @Column(name = "active", nullable = false)
+    @Column(name = "ACTIVE", nullable = false)
     @Builder.Default
-    private Boolean active = true;
+    private Character active = 'Y';
 
     @JsonManagedReference
     @OneToMany(mappedBy = "medicalHistory", cascade = CascadeType.ALL, fetch = FetchType.EAGER)

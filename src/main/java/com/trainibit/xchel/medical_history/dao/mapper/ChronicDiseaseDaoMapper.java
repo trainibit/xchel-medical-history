@@ -2,7 +2,6 @@ package com.trainibit.xchel.medical_history.dao.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.UUID;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.Nullable;
@@ -15,13 +14,12 @@ public class ChronicDiseaseDaoMapper implements RowMapper<ChronicDisease> {
     @SuppressWarnings("null")
     public ChronicDisease mapRow(ResultSet rs, int rowNum) throws SQLException {
         return ChronicDisease.builder()
-                .id(rs.getLong("id"))
-                .uuid((UUID) rs.getObject("uuid"))
-                .name(rs.getString("name"))
-                .createdDate(rs.getTimestamp("created_date"))
-                .updatedDate(rs.getTimestamp("updated_date"))
-                .updatedDate(rs.getTimestamp("updated_date"))
-                .active(rs.getBoolean("active"))
+                .id(rs.getLong("ID"))
+                .uuid(rs.getString("UUID"))
+                .name(rs.getString("NAME"))
+                .createdDate(rs.getTimestamp("CREATED_DATE"))
+                .updatedDate(rs.getTimestamp("UPDATED_DATE"))
+                .active(rs.getString("ACTIVE").charAt(0))
                 .build();
     }
 }
