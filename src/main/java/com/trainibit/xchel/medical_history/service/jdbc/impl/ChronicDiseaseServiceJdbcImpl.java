@@ -1,7 +1,6 @@
 package com.trainibit.xchel.medical_history.service.jdbc.impl;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -40,7 +39,7 @@ public class ChronicDiseaseServiceJdbcImpl implements ChronicDiseaseServiceJdbc 
 
     @Override
     @Cacheable(value = "chronicDisease", key = "#uuid")
-    public ChronicDiseaseResponse getChronicDiseaseByUuid(UUID uuid) {
+    public ChronicDiseaseResponse getChronicDiseaseByUuid(String uuid) {
         log.info("Obteniendo la enfermedad crónica desde la Base de Datos con JDBC");
         return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseDao.getChronicDiseaseByUuid(uuid));
     }
@@ -57,14 +56,14 @@ public class ChronicDiseaseServiceJdbcImpl implements ChronicDiseaseServiceJdbc 
             @CacheEvict(cacheNames = "chronicDisease", key = "#uuid", beforeInvocation = true),
             @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
     })
-    public void deleteChronicDisease(UUID uuid) {
+    public void deleteChronicDisease(String uuid) {
         this.chronicDiseaseDao.deleteChronicDisease(uuid);
     }
 
     @Override
     @CachePut(cacheNames = "chronicDisease", key = "#uuid")
     @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
-    public ChronicDiseaseResponse updateChronicDisease(UUID uuid, ChronicDiseaseRequest chronicDiseaseRequest) {
+    public ChronicDiseaseResponse updateChronicDisease(String uuid, ChronicDiseaseRequest chronicDiseaseRequest) {
         return this.chronicDiseaseMapper
                 .entityToResponse(this.chronicDiseaseDao.editChronicDisease(uuid, chronicDiseaseRequest.getName()));
     }

@@ -36,22 +36,22 @@ public class ChronicDiseaseServiceJpaImpl implements ChronicDiseaseServiceJpa {
     public List<ChronicDiseaseResponse> getAllChronicDiseases() {
         log.info("Obteniendo las enfermedades crónicas desde la Base de Datos");
         return this.chronicDiseaseMapper.entityToResponseList(
-                this.chronicDiseaseRepository.findAllByActiveTrue());
+                this.chronicDiseaseRepository.findAllByActive('Y'));
     }
 
     @Override
     @Cacheable(value = "chronicDisease", key = "#uuid")
-    public ChronicDiseaseResponse getChronicDiseaseByUuid(UUID uuid) {
+    public ChronicDiseaseResponse getChronicDiseaseByUuid(String uuid) {
         log.info("Obteniendo la enfermedad crónica desde la Base de Datos");
-        return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.findByUuidAndActiveTrue(uuid));
+        return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.findByUuidAndActive(uuid, 'Y'));
     }
 
     @Override
     @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
     public ChronicDiseaseResponse addChronicDisease(ChronicDiseaseRequest chronicDiseaseRequest) {
         ChronicDisease newChronicDisease = this.chronicDiseaseMapper.requestToEntity(chronicDiseaseRequest);
-        newChronicDisease.setActive(true);
-        newChronicDisease.setUuid(UUID.randomUUID());
+        newChronicDisease.setActive('Y');
+        newChronicDisease.setUuid(UUID.randomUUID().toString());
         return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.save(newChronicDisease));
     }
 
@@ -60,17 +60,17 @@ public class ChronicDiseaseServiceJpaImpl implements ChronicDiseaseServiceJpa {
             @CacheEvict(cacheNames = "chronicDisease", key = "#uuid", beforeInvocation = true),
             @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
     })
-    public void deleteChronicDisease(UUID uuid) {
-        ChronicDisease chronicDiseaseToDelete = this.chronicDiseaseRepository.findByUuidAndActiveTrue(uuid);
-        chronicDiseaseToDelete.setActive(false);
+    public void deleteChronicDisease(String uuid) {
+        ChronicDisease chronicDiseaseToDelete = this.chronicDiseaseRepository.findByUuidAndActive(uuid, 'Y');
+        chronicDiseaseToDelete.setActive('N');
         this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.save(chronicDiseaseToDelete));
     }
 
     @Override
     @CachePut(cacheNames = "chronicDisease", key = "#uuid")
     @CacheEvict(cacheNames = "chronicDiseases", key = "'all'", beforeInvocation = true)
-    public ChronicDiseaseResponse updateChronicDisease(UUID uuid, ChronicDiseaseRequest chronicDiseaseRequest) {
-        ChronicDisease chronicDiseaseToUpdate = this.chronicDiseaseRepository.findByUuidAndActiveTrue(uuid);
+    public ChronicDiseaseResponse updateChronicDisease(String uuid, ChronicDiseaseRequest chronicDiseaseRequest) {
+        ChronicDisease chronicDiseaseToUpdate = this.chronicDiseaseRepository.findByUuidAndActive(uuid, 'Y');
         chronicDiseaseToUpdate.setName(chronicDiseaseRequest.getName() == null ? chronicDiseaseToUpdate.getName()
                 : chronicDiseaseRequest.getName());
         return this.chronicDiseaseMapper.entityToResponse(this.chronicDiseaseRepository.save(chronicDiseaseToUpdate));

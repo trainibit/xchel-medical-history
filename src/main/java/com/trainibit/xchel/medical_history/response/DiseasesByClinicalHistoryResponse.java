@@ -1,7 +1,6 @@
 package com.trainibit.xchel.medical_history.response;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.trainibit.xchel.medical_history.entity.MedicalHistory;
@@ -15,7 +14,7 @@ public class DiseasesByClinicalHistoryResponse implements Serializable {
     @JsonBackReference
     private MedicalHistory medicalHistory;
 
-    private UUID uuid;
+    private String uuid;
     private ChronicDiseaseResponse chronicDisease;
-    private Boolean active = false;
+    private Character active;
 }

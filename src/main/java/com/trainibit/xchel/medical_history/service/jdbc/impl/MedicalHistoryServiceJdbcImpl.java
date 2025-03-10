@@ -6,12 +6,11 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import com.trainibit.xchel.medical_history.dao.ChronicDiseaseDao;
 import com.trainibit.xchel.medical_history.dao.MedicalHistoryDao;
 import com.trainibit.xchel.medical_history.entity.DiseasesByMedicalHistory;
 import com.trainibit.xchel.medical_history.entity.MedicalHistory;
-import com.trainibit.xchel.medical_history.mapper.DiseasesByMedicalHistoryMapper;
 import com.trainibit.xchel.medical_history.mapper.MedicalHistoryMapper;
-import com.trainibit.xchel.medical_history.repository.ChronicDiseaseRepository;
 import com.trainibit.xchel.medical_history.request.MedicalHistoryRequest;
 import com.trainibit.xchel.medical_history.response.MedicalHistoryResponse;
 import com.trainibit.xchel.medical_history.service.jdbc.MedicalHistoryServiceJdbc;
@@ -22,14 +21,13 @@ public class MedicalHistoryServiceJdbcImpl implements MedicalHistoryServiceJdbc 
 
         final MedicalHistoryMapper medicalHistoryMapper;
 
-        final ChronicDiseaseRepository chronicDiseaseRepository;
+        final ChronicDiseaseDao chronicDiseaseDao;
 
         public MedicalHistoryServiceJdbcImpl(MedicalHistoryDao medicalHistoryDao,
-                        MedicalHistoryMapper medicalHistoryMapper, ChronicDiseaseRepository chronicDiseaseRepository,
-                        DiseasesByMedicalHistoryMapper diseasesByClinicalHistoryMapper) {
+                        MedicalHistoryMapper medicalHistoryMapper, ChronicDiseaseDao chronicDiseaseDao) {
                 this.medicalHistoryDao = medicalHistoryDao;
                 this.medicalHistoryMapper = medicalHistoryMapper;
-                this.chronicDiseaseRepository = chronicDiseaseRepository;
+                this.chronicDiseaseDao = chronicDiseaseDao;
         }
 
         @Override
@@ -38,25 +36,25 @@ public class MedicalHistoryServiceJdbcImpl implements MedicalHistoryServiceJdbc 
         }
 
         @Override
-        public MedicalHistoryResponse getMedicalHistoryByUuid(UUID uuid) {
+        public MedicalHistoryResponse getMedicalHistoryByUuid(String uuid) {
                 return this.medicalHistoryMapper.entityToResponse(this.medicalHistoryDao.getMedicalHistoryByUuid(uuid));
         }
 
         @Override
         public MedicalHistoryResponse createMedicalHistory(MedicalHistoryRequest medicalHistoryRequest) {
                 MedicalHistory newMedicalHistory = this.medicalHistoryMapper.requestToEntity(medicalHistoryRequest);
-                newMedicalHistory.setActive(true);
-                newMedicalHistory.setUuid(UUID.randomUUID());
+                newMedicalHistory.setActive('Y');
+                newMedicalHistory.setUuid(UUID.randomUUID().toString());
 
                 List<DiseasesByMedicalHistory> diseasesByClinicalHistoryList = new ArrayList<>();
 
                 medicalHistoryRequest.getChronicDiseases().forEach(chronicDisease -> {
                         diseasesByClinicalHistoryList.add(DiseasesByMedicalHistory.builder()
                                         .medicalHistory(newMedicalHistory)
-                                        .uuid(UUID.randomUUID())
-                                        .active(true)
-                                        .chronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(
-                                                        UUID.fromString(chronicDisease.getUuid())))
+                                        .uuid(UUID.randomUUID().toString())
+                                        .active('Y')
+                                        .chronicDisease(this.chronicDiseaseDao
+                                                        .getChronicDiseaseByUuid(chronicDisease.getUuid()))
                                         .build());
                 });
 
@@ -66,12 +64,12 @@ public class MedicalHistoryServiceJdbcImpl implements MedicalHistoryServiceJdbc 
         }
 
         @Override
-        public void deleteMedicalHistory(UUID uuid) {
+        public void deleteMedicalHistory(String uuid) {
                 this.medicalHistoryDao.deleteMedicalHistory(uuid);
         }
 
         @Override
-        public MedicalHistoryResponse updateMedicalHistory(UUID uuid, MedicalHistoryRequest medicalHistoryRequest) {
+        public MedicalHistoryResponse updateMedicalHistory(String uuid, MedicalHistoryRequest medicalHistoryRequest) {
                 MedicalHistory medicalHistoryToUpdate = this.medicalHistoryDao.getMedicalHistoryByUuid(uuid);
 
                 medicalHistoryToUpdate
@@ -79,8 +77,9 @@ public class MedicalHistoryServiceJdbcImpl implements MedicalHistoryServiceJdbc 
                                                 ? medicalHistoryToUpdate.getAllergies()
                                                 : medicalHistoryRequest.getAllergies());
                 medicalHistoryToUpdate
-                                .setSize(medicalHistoryRequest.getSize() == null ? medicalHistoryToUpdate.getSize()
-                                                : medicalHistoryRequest.getSize());
+                                .setHeight(medicalHistoryRequest.getHeight() == null
+                                                ? medicalHistoryToUpdate.getHeight()
+                                                : medicalHistoryRequest.getHeight());
                 medicalHistoryToUpdate.setWeight(
                                 medicalHistoryRequest.getWeight() == null ? medicalHistoryToUpdate.getWeight()
                                                 : medicalHistoryRequest.getWeight());
@@ -89,8 +88,8 @@ public class MedicalHistoryServiceJdbcImpl implements MedicalHistoryServiceJdbc 
                                                 medicalHistoryRequest.getLastMedicalPrescriptionUuid() == null
                                                                 ? medicalHistoryToUpdate
                                                                                 .getLastMedicalPrescriptionUuid()
-                                                                : UUID.fromString(medicalHistoryRequest
-                                                                                .getLastMedicalPrescriptionUuid()));
+                                                                : medicalHistoryRequest
+                                                                                .getLastMedicalPrescriptionUuid());
                 medicalHistoryToUpdate.setBloodPressure(
                                 medicalHistoryRequest.getBloodPressure() == null
                                                 ? medicalHistoryToUpdate.getBloodPressure()
@@ -102,24 +101,23 @@ public class MedicalHistoryServiceJdbcImpl implements MedicalHistoryServiceJdbc 
                 medicalHistoryToUpdate
                                 .setPatientUuid(medicalHistoryRequest.getPatientUuid() == null
                                                 ? medicalHistoryToUpdate.getPatientUuid()
-                                                : UUID.fromString(medicalHistoryRequest.getPatientUuid()));
+                                                : medicalHistoryRequest.getPatientUuid());
 
                 medicalHistoryRequest.getChronicDiseases().forEach(chronicDisease -> {
                         // Si ya existe la enfermedad en el historial médico
-                        if (isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(),
-                                        UUID.fromString(chronicDisease.getUuid()))) {
+                        if (isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(), chronicDisease.getUuid())) {
                                 medicalHistoryToUpdate.getChronicDiseases().stream()
                                                 .filter(disease -> disease.getChronicDisease().getUuid()
-                                                                .equals(UUID.fromString(chronicDisease.getUuid())))
+                                                                .equals(chronicDisease.getUuid()))
                                                 .forEach(coincidence -> coincidence
                                                                 .setActive(chronicDisease.getActive()));
-                        } else if (chronicDisease.getActive()) {
+                        } else if (chronicDisease.getActive() == 'Y') {
                                 medicalHistoryToUpdate.getChronicDiseases().add(DiseasesByMedicalHistory.builder()
                                                 .medicalHistory(medicalHistoryToUpdate)
-                                                .uuid(UUID.randomUUID())
-                                                .chronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(
-                                                                UUID.fromString(chronicDisease.getUuid())))
-                                                .active(true)
+                                                .uuid(UUID.randomUUID().toString())
+                                                .chronicDisease(this.chronicDiseaseDao
+                                                                .getChronicDiseaseByUuid(chronicDisease.getUuid()))
+                                                .active('Y')
                                                 .build());
                         }
                 });
@@ -133,7 +131,7 @@ public class MedicalHistoryServiceJdbcImpl implements MedicalHistoryServiceJdbc 
         }
 
         private Boolean isDiseaseInHistory(List<DiseasesByMedicalHistory> diseasesByClinicalHistory,
-                        UUID uuidDisease) {
+                        String uuidDisease) {
                 return diseasesByClinicalHistory.stream()
                                 .anyMatch(disease -> disease.getChronicDisease().getUuid().equals(uuidDisease));
         }

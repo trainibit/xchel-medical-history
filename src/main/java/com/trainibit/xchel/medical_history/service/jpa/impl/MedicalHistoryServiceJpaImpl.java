@@ -16,7 +16,10 @@ import com.trainibit.xchel.medical_history.request.MedicalHistoryRequest;
 import com.trainibit.xchel.medical_history.response.MedicalHistoryResponse;
 import com.trainibit.xchel.medical_history.service.jpa.MedicalHistoryServiceJpa;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class MedicalHistoryServiceJpaImpl implements MedicalHistoryServiceJpa {
         final MedicalHistoryRepository medicalHistoryRepository;
 
@@ -35,30 +38,30 @@ public class MedicalHistoryServiceJpaImpl implements MedicalHistoryServiceJpa {
         @Override
         public List<MedicalHistoryResponse> getAllMedicalRecords() {
                 return this.medicalHistoryMapper
-                                .entityToResponseList(this.medicalHistoryRepository.findAllByActiveTrue());
+                                .entityToResponseList(this.medicalHistoryRepository.findAllByActive('Y'));
         }
 
         @Override
-        public MedicalHistoryResponse getMedicalHistoryByUuid(UUID uuid) {
+        public MedicalHistoryResponse getMedicalHistoryByUuid(String uuid) {
                 return this.medicalHistoryMapper
-                                .entityToResponse(this.medicalHistoryRepository.findByUuidAndActiveTrue(uuid));
+                                .entityToResponse(this.medicalHistoryRepository.findByUuidAndActive(uuid, 'Y'));
         }
 
         @Override
         public MedicalHistoryResponse createMedicalHistory(MedicalHistoryRequest medicalHistoryRequest) {
                 MedicalHistory newMedicalHistory = this.medicalHistoryMapper.requestToEntity(medicalHistoryRequest);
-                newMedicalHistory.setActive(true);
-                newMedicalHistory.setUuid(UUID.randomUUID());
+                newMedicalHistory.setActive('Y');
+                newMedicalHistory.setUuid(UUID.randomUUID().toString());
 
                 List<DiseasesByMedicalHistory> diseasesByClinicalHistoryList = new ArrayList<>();
 
                 medicalHistoryRequest.getChronicDiseases().forEach(chronicDisease -> {
                         diseasesByClinicalHistoryList.add(DiseasesByMedicalHistory.builder()
                                         .medicalHistory(newMedicalHistory)
-                                        .uuid(UUID.randomUUID())
-                                        .active(true)
-                                        .chronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(
-                                                        UUID.fromString(chronicDisease.getUuid())))
+                                        .uuid(UUID.randomUUID().toString())
+                                        .active('Y')
+                                        .chronicDisease(this.chronicDiseaseRepository
+                                                        .findByUuidAndActive(chronicDisease.getUuid(), 'Y'))
                                         .build());
                 });
 
@@ -68,22 +71,23 @@ public class MedicalHistoryServiceJpaImpl implements MedicalHistoryServiceJpa {
         }
 
         @Override
-        public void deleteMedicalHistory(UUID uuid) {
-                MedicalHistory medicalHistoryToDelete = this.medicalHistoryRepository.findByUuidAndActiveTrue(uuid);
-                medicalHistoryToDelete.setActive(false);
+        public void deleteMedicalHistory(String uuid) {
+                MedicalHistory medicalHistoryToDelete = this.medicalHistoryRepository.findByUuidAndActive(uuid, 'Y');
+                medicalHistoryToDelete.setActive('N');
                 this.medicalHistoryRepository.save(medicalHistoryToDelete);
         }
 
         @Override
-        public MedicalHistoryResponse updateMedicalHistory(UUID uuid, MedicalHistoryRequest medicalHistoryRequest) {
-                MedicalHistory medicalHistoryToUpdate = this.medicalHistoryRepository.findByUuidAndActiveTrue(uuid);
+        public MedicalHistoryResponse updateMedicalHistory(String uuid, MedicalHistoryRequest medicalHistoryRequest) {
+                MedicalHistory medicalHistoryToUpdate = this.medicalHistoryRepository.findByUuidAndActive(uuid, 'Y');
                 medicalHistoryToUpdate
                                 .setAllergies(medicalHistoryRequest.getAllergies() == null
                                                 ? medicalHistoryToUpdate.getAllergies()
                                                 : medicalHistoryRequest.getAllergies());
                 medicalHistoryToUpdate
-                                .setSize(medicalHistoryRequest.getSize() == null ? medicalHistoryToUpdate.getSize()
-                                                : medicalHistoryRequest.getSize());
+                                .setHeight(medicalHistoryRequest.getHeight() == null
+                                                ? medicalHistoryToUpdate.getHeight()
+                                                : medicalHistoryRequest.getHeight());
                 medicalHistoryToUpdate.setWeight(
                                 medicalHistoryRequest.getWeight() == null ? medicalHistoryToUpdate.getWeight()
                                                 : medicalHistoryRequest.getWeight());
@@ -92,8 +96,8 @@ public class MedicalHistoryServiceJpaImpl implements MedicalHistoryServiceJpa {
                                                 medicalHistoryRequest.getLastMedicalPrescriptionUuid() == null
                                                                 ? medicalHistoryToUpdate
                                                                                 .getLastMedicalPrescriptionUuid()
-                                                                : UUID.fromString(medicalHistoryRequest
-                                                                                .getLastMedicalPrescriptionUuid()));
+                                                                : medicalHistoryRequest
+                                                                                .getLastMedicalPrescriptionUuid());
                 medicalHistoryToUpdate.setBloodPressure(
                                 medicalHistoryRequest.getBloodPressure() == null
                                                 ? medicalHistoryToUpdate.getBloodPressure()
@@ -105,24 +109,25 @@ public class MedicalHistoryServiceJpaImpl implements MedicalHistoryServiceJpa {
                 medicalHistoryToUpdate
                                 .setPatientUuid(medicalHistoryRequest.getPatientUuid() == null
                                                 ? medicalHistoryToUpdate.getPatientUuid()
-                                                : UUID.fromString(medicalHistoryRequest.getPatientUuid()));
+                                                : medicalHistoryRequest.getPatientUuid());
 
                 medicalHistoryRequest.getChronicDiseases().forEach(chronicDisease -> {
                         // Si ya existe la enfermedad en el historial médico
-                        if (isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(),
-                                        UUID.fromString(chronicDisease.getUuid()))) {
+                        if (isDiseaseInHistory(medicalHistoryToUpdate.getChronicDiseases(), chronicDisease.getUuid())) {
+                                log.info("La enfermedad " + chronicDisease.getUuid() + " ya existe y se le cambiara el estado a " + chronicDisease.getActive());
                                 medicalHistoryToUpdate.getChronicDiseases().stream()
-                                                .filter(disease -> disease.getChronicDisease().getUuid()
-                                                                .equals(UUID.fromString(chronicDisease.getUuid())))
+                                                .filter(disease -> disease.getChronicDisease()
+                                                                .getUuid().equals(chronicDisease.getUuid()))
                                                 .forEach(coincidence -> coincidence
                                                                 .setActive(chronicDisease.getActive()));
-                        } else if (chronicDisease.getActive()) {
+                        } else if (chronicDisease.getActive() == 'Y') {
+                                log.info("La enfermedad " + chronicDisease.getUuid() + " no existe pero se agregara porque tiene estado " + chronicDisease.getActive());
                                 medicalHistoryToUpdate.getChronicDiseases().add(DiseasesByMedicalHistory.builder()
                                                 .medicalHistory(medicalHistoryToUpdate)
-                                                .uuid(UUID.randomUUID())
-                                                .chronicDisease(this.chronicDiseaseRepository.findByUuidAndActiveTrue(
-                                                                UUID.fromString(chronicDisease.getUuid())))
-                                                .active(true)
+                                                .uuid(UUID.randomUUID().toString())
+                                                .chronicDisease(this.chronicDiseaseRepository.findByUuidAndActive(
+                                                                chronicDisease.getUuid(), 'Y'))
+                                                .active('Y')
                                                 .build());
                         }
                 });
@@ -132,7 +137,7 @@ public class MedicalHistoryServiceJpaImpl implements MedicalHistoryServiceJpa {
         }
 
         private Boolean isDiseaseInHistory(List<DiseasesByMedicalHistory> diseasesByClinicalHistory,
-                        UUID uuidDisease) {
+                        String uuidDisease) {
                 return diseasesByClinicalHistory.stream()
                                 .anyMatch(disease -> disease.getChronicDisease().getUuid().equals(uuidDisease));
         }

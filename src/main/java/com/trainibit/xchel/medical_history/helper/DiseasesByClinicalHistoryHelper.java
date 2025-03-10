@@ -23,7 +23,7 @@ public class DiseasesByClinicalHistoryHelper {
         List<DiseasesByClinicalHistoryResponse> diseasesByClinicalHistoryResponseList = diseasesByClinicalHistoryMapper
                 .entityToResponseList(diseasesByClinicalHistoryList);
         return diseasesByClinicalHistoryResponseList.stream()
-                .filter(DiseasesByClinicalHistoryResponse::getActive)
+                .filter(disease -> disease.getActive() == 'Y')
                 .toList();
     }
 }

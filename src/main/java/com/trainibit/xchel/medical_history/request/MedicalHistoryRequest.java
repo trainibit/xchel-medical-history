@@ -30,8 +30,8 @@ public class MedicalHistoryRequest {
     @DecimalMin(value = "0.2", message = "Una persona no puede medir menos de 0.2 m (20 cm)")
     // La persona más alta del mundo es Sultan Kösen, un turco que mide 2,51 m.
     @DecimalMax(value = "3.0", message = "Una persona no puede medir más de 3 m")
-    @NotNull(message = "La altura (size) es un campo obligatorio")
-    private Float size;
+    @NotNull(message = "La altura (height) es un campo obligatorio")
+    private Float height;
 
     @Pattern(regexp = "^\\d{2,3}/\\d{2,3}$", message = "Por favor, ingrese la presión arterial en el formato Presión Sistólica/Presión Diastólica. Ej. '120/80'")
     private String bloodPressure;

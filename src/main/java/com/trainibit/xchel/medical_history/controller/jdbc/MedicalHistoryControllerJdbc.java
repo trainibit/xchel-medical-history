@@ -3,7 +3,6 @@ package com.trainibit.xchel.medical_history.controller.jdbc;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,7 +35,7 @@ public class MedicalHistoryControllerJdbc {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<MedicalHistoryResponse> getMedicalHistory(@PathVariable UUID uuid) {
+    public ResponseEntity<MedicalHistoryResponse> getMedicalHistory(@PathVariable String uuid) {
         return ResponseEntity.ok(this.medicalHistoryServiceJdbc.getMedicalHistoryByUuid(uuid));
     }
 
@@ -48,13 +47,13 @@ public class MedicalHistoryControllerJdbc {
     }
 
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<MedicalHistoryResponse> deleteMedicalHistory(@PathVariable UUID uuid) {
+    public ResponseEntity<MedicalHistoryResponse> deleteMedicalHistory(@PathVariable String uuid) {
         this.medicalHistoryServiceJdbc.deleteMedicalHistory(uuid);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<MedicalHistoryResponse> updateMedicalHistory(@PathVariable UUID uuid,
+    public ResponseEntity<MedicalHistoryResponse> updateMedicalHistory(@PathVariable String uuid,
             @Valid @RequestBody MedicalHistoryRequest medicalHistoryRequest) {
         return ResponseEntity.ok(this.medicalHistoryServiceJdbc.updateMedicalHistory(uuid, medicalHistoryRequest));
     }
