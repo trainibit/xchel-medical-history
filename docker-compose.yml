@@ -3,27 +3,29 @@ services:
     container_name: xchel_medical_history
     image: xchel_medical_history:1.0.0
     build: .
-    ports: 
+    ports:
       - 8080:8080
     environment:
-      - DATABASE_POSTGRES_URL=jdbc:postgresql://postgres_xchel_medical_history:5432/xchel_medical_records
-      - DATABASE_POSTGRES_USERNAME=postgres
-      - DATABASE_POSTGRES_PASSWORD=y!_X!K8E!G!hEc6!Dvh@
+      - ORACLE_DATABASE_HOST=oracle_db_xchel_medical_history
+      - ORACLE_DATABASE_PORT=1521
+      - ORACLE_DATABASE_SERVICE_NAME=FREE
+      - ORACLE_DATABASE_USERNAME=C##XCHEL_MEDICAL_RECORDS
+      - ORACLE_DATABASE_PASSWORD=LKPW3XVj8crFUB-6CY_f
+      - ORACLE_DATABASE_DEFAULT_SCHEMA=C##XCHEL_MEDICAL_RECORDS
       - REDIS_HOST=redis_xchel_medical_history
       - REDIS_PORT=6379
     depends_on:
-      - postgres_xchel_medical_history
+      - oracle_db_xchel_medical_history
       - redis_xchel_medical_history
-    command: ["sh", "-c", "sleep 30 && ./java -jar xchel-medical-history-app.jar"]
-  postgres_xchel_medical_history:
-    container_name: postgres_xchel_medical_history
-    image: postgres:17.4
+  oracle_db_xchel_medical_history:
+    container_name: oracle_db_xchel_medical_history
+    image: container-registry.oracle.com/database/free:23.7.0.0-amd64
     ports:
-      - 5432:5432
+      - 1521:1521
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=y!_X!K8E!G!hEc6!Dvh@
-      - POSTGRES_DB=xchel_medical_records
+      - ORACLE_PWD=LKPW3XVj8crFUB-6CY_f
+    volumes:
+      - ./src/main/resources/db/scripts_setup:/opt/oracle/scripts/startup
   redis_xchel_medical_history:
     container_name: redis_xchel_medical_history
     image: redis:7.4.2
